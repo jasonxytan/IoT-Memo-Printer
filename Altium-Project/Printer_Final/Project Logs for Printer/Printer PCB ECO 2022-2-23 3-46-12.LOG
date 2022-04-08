@@ -1,0 +1,4 @@
+Added Pin To Net: NetName=NetD3_1 Pin=D3-1
+Added Pin To Net: NetName=NetD3_1 Pin=R18-2
+Added Net: Name=NetD3_1
+Added Member To Class: ClassName=U_LiPo_Charger Member=Component D3 LTST-C170CKT

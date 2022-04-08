@@ -1,0 +1,25 @@
+Removed Pin From Net: NetName=SERCOM0_SPI_MISO_1 Pin=TP36-1
+Removed Pin From Net: NetName=SERCOM0_SPI_MISO_1 Pin=U4-38
+Added Component: Designator=J3(RHDR20W75P0X254_1X20_5130X254X850P)
+Add component (AddParameter): Name = "Arrow Part Number"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Arrow Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Datasheet Link"; Value = "https://media.digikey.com/pdf/Data%20Sheets/Sullins%20PDFs/Female_Headers.100_DS.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "8.5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Name"; Value = "Sullins"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "PPTC201LFBN-RC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mouser Part Number"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mouser Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=J3-1
+Added Pin To Net: NetName=3V3 Pin=J3-2
+Added Pin To Net: NetName=SERCOM0_SPI_CLK_1 Pin=J3-4
+Added Pin To Net: NetName=SERCOM0_SPI_MISO_1 Pin=J3-5
+Added Pin To Net: NetName=GPIO_Touchscreen_CS_1 Pin=J3-7
+Added Pin To Net: NetName=GPIO_Touchscreen_D/C_1 Pin=J3-8
+Added Pin To Net: NetName=ADC_GPIO_Touchscreen_Y+_1 Pin=J3-11
+Added Pin To Net: NetName=GPIO_Touchscreen_X+_1 Pin=J3-12
+Added Pin To Net: NetName=GPIO_Touchscreen_Y-_1 Pin=J3-13
+Added Pin To Net: NetName=ADC_GPIO_Touchscreen_X-_1 Pin=J3-14
+Added Pin To Net: NetName=SERCOM0_SPI_MOSI_1 Pin=J3-6
+Added Pin To Net: NetName=SERCOM0_SPI_MOSI_1 Pin=TP36-1
+Added Pin To Net: NetName=SERCOM0_SPI_MOSI_1 Pin=U4-38
+Added Net: Name=SERCOM0_SPI_MOSI_1

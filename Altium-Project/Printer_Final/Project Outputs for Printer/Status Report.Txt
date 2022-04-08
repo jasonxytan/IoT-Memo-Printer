@@ -1,0 +1,27 @@
+Project Outputs Generation Report
+---------------------------------
+Start Output Generation At 11:16:55 PM On 3/8/2022
+
+Output: Gerber Files
+Type  : Gerber
+From  : Variant [Build_Alt] of PCB Document [Printer.PcbDoc]
+   Generated File[Printer.GTO]
+   Generated File[Printer.GTP]
+   Generated File[Printer.GTS]
+   Generated File[Printer.GTL]
+   Generated File[Printer.G1]
+   Generated File[Printer.G2]
+   Generated File[Printer.GBL]
+   Generated File[Printer.GBS]
+   Generated File[Printer.GBP]
+   Generated File[Printer.GBO]
+   Generated File[Printer.GM4]
+   Generated File[Printer.RUL]
+   Generated File[Printer.EXTREP]
+   Generated File[Printer.REP]
+
+
+Files Generated   : 14
+Documents Printed : 0
+
+Finished Output Generation At 11:16:57 PM On 3/8/2022

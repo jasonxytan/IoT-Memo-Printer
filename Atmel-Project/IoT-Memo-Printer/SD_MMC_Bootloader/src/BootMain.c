@@ -58,8 +58,12 @@ FRESULT res; //Holds the result of the FATFS functions done on the SD CARD TEST
 FATFS fs; //Holds the File System of the SD CARD
 FIL file_object; //FILE OBJECT used on main for the SD Card Test
 
+char test_a_file_name[] = "FlagA.txt";	///<Test TEXT File name
+char test_a_bin_file[] = "TestA.bin";	///<Test BINARY File name
+char test_b_file_name[] = "FlagB.txt";	///<Test TEXT File name
+char test_b_bin_file[] = "TestB.bin";	///<Test BINARY File name
 
-
+uint8_t update = 0;
 /******************************************************************************
 * Global Functions
 ******************************************************************************/
@@ -121,8 +125,6 @@ int main(void)
 
 	//PERFORM BOOTLOADER HERE!
 
-	//define #MEM EXAMPLE
-#ifdef MEM_EXAMPLE
 	//Example
 	//Check out the NVM API at http://asf.atmel.com/docs/latest/samd21/html/group__asfdoc__sam0__nvm__group.html#asfdoc_sam0_nvm_examples . It provides important information too!
 
@@ -130,103 +132,187 @@ int main(void)
 	struct nvm_parameters parameters;
 	char helpStr[64]; //Used to help print values
 	nvm_get_parameters (&parameters); //Get NVM parameters
-	snprintf(helpStr, 63,"NVM Info: Number of Pages %d. Size of a page: %d bytes. \r\n", parameters.nvm_number_of_pages, parameters.page_size);
+	uint16_t row_size = 4 * parameters.page_size; // NOTICE HERE!!! MUST USE UINT16_T OR LARGER BECAUSE PAGE SIZE IS 256 > UINT8_T_MAX = 255
+	snprintf(helpStr, 63,"NVM Info: Number of Pages %u. Size of a page: %u bytes. \r\n", parameters.nvm_number_of_pages, parameters.page_size);
 	SerialConsoleWriteString(helpStr);
-	//The SAMD21 NVM (and most if not all NVMs) can only erase and write by certain chunks of data size.
-	//The SAMD21 can WRITE on pages. However erase are done by ROW. One row is conformed by four (4) pages.
-	//An erase is mandatory before writing to a page.
 	
-
-	//We will do the following in this example:
-	//Erase the first row of the application data
-	//Read a page of data from the SD Card. The SD CARD initialization writes a file with this data as its test for initialization
-	//Write it to the first row.
-	//CheckCRC32 of both files.
-	
-	uint8_t readBuffer[256]; //Buffer the size of one row
-	uint32_t numBytesRead = 0;
-
-	//Erase first page of Main FW
-	//This page starts at APP_START_ADDRESS
-	enum status_code nvmError = nvm_erase_row(APP_START_ADDRESS);
-	if(nvmError != STATUS_OK)
+	// check flags
+	res = f_open(&file_object, (char const *)test_a_file_name, FA_READ);
+	if (res == FR_OK)
 	{
-		SerialConsoleWriteString("Erase error");
-	}
-	
-	//Make sure it got erased - we read the page. Erasure in NVM is an 0xFF
-	for(int iter = 0; iter < 256; iter++)
-	{
-		char *a = (char *)(APP_START_ADDRESS + iter); //Pointer pointing to address APP_START_ADDRESS
-		if(*a != 0xFF)
-		{
-			SerialConsoleWriteString("Error - test page is not erased!");
-			break;	
-		}
-	}	
-
-	//Read SD Card File
-	test_bin_file[0] = LUN_ID_SD_MMC_0_MEM + '0';
-	res = f_open(&file_object, (char const *)test_bin_file, FA_READ);
-		
-	if (res != FR_OK)
-	{
-		SerialConsoleWriteString("Could not open test file!\r\n");
-	}
-
-	int numBytesLeft = 256;
-	numBytesRead = 0;
-	int numberBytesTotal = 0;
-	while(numBytesLeft  != 0) 
-	{
-		
-		res = f_read(&file_object, &readBuffer[numberBytesTotal], numBytesLeft, &numBytesRead); //Question to students: What is numBytesRead? What are we doing here?
-		numBytesLeft -= numBytesRead; 
-		numberBytesTotal += numBytesRead;
-	}
-	
-
-
-	//Write data to first row. Writes are per page, so we need four writes to write a complete row
-	res = nvm_write_buffer (APP_START_ADDRESS, &readBuffer[0], 64);
-	res = nvm_write_buffer (APP_START_ADDRESS + 64, &readBuffer[64], 64);
-	res = nvm_write_buffer (APP_START_ADDRESS + 128, &readBuffer[128], 64);
-	res = nvm_write_buffer (APP_START_ADDRESS + 192, &readBuffer[192], 64);
-
-		if (res != FR_OK)
-		{
-			SerialConsoleWriteString("Test write to NVM failed!\r\n");
-		}
-		else
-		{
-			SerialConsoleWriteString("Test write to NVM succeeded!\r\n");
-		}
-
-	//CRC32 Calculation example: Please read http://asf.atmel.com/docs/latest/samd21/html/group__asfdoc__sam0__drivers__crc32__group.html
-
-	//CRC of SD Card. Errata 1.8.3 determines we should run this code every time we do CRC32 from a RAM source. See http://ww1.microchip.com/downloads/en/DeviceDoc/SAM-D21-Family-Silicon-Errata-and-DataSheet-Clarification-DS80000760D.pdf Section 1.8.3
-	uint32_t resultCrcSd = 0;
-	*((volatile unsigned int*) 0x41007058) &= ~0x30000UL;
-	enum status_code crcres = dsu_crc32_cal	(&readBuffer[0]	,256, &resultCrcSd); //Instructor note: Was it the third parameter used for? Please check how you can use the third parameter to do the CRC of a long data stream in chunks - you will need it!
-	*((volatile unsigned int*) 0x41007058) |= 0x20000UL;
-	//CRC of memory (NVM)
-	uint32_t resultCrcNvm = 0;
-	
-	crcres |= dsu_crc32_cal	((uint32_t)APP_START_ADDRESS,256, &resultCrcNvm);
-	
-
-	if (crcres != STATUS_OK)
-	{
-		SerialConsoleWriteString("Could not calculate CRC!!\r\n");
+		f_close(&file_object);
+		res = f_unlink(test_a_file_name);
+		update = 1;
 	}
 	else
 	{
-		snprintf(helpStr, 63,"CRC SD CARD: %d  CRC NVM: %d \r\n", resultCrcNvm, resultCrcSd);
-		SerialConsoleWriteString(helpStr);
+		res = f_open(&file_object, (char const *)test_b_file_name, FA_READ);
+		if (res == FR_OK)
+		{
+			f_close(&file_object);
+			res = f_unlink(test_b_file_name);
+			update = 2;
+		}
+		else
+		{
+			update = 0;
+		}
 	}
 
+	if (update != 0)
+	{
+		//The SAMD21 NVM (and most if not all NVMs) can only erase and write by certain chunks of data size.
+		//The SAMD21 can WRITE on pages. However erase are done by ROW. One row is conformed by four (4) pages.
+		//An erase is mandatory before writing to a page.
+	
 
-#endif
+		//We will do the following in this example:
+		//Erase the first row of the application data
+		//Read a page of data from the SD Card. The SD CARD initialization writes a file with this data as its test for initialization
+		//Write it to the first row.
+		//CheckCRC32 of both files.
+		
+		//Read SD Card File
+		res = f_open(&file_object, (char const *)(update == 1)?test_a_bin_file:test_b_bin_file, FA_READ);
+		if (res != FR_OK)
+		{
+			SerialConsoleWriteString("Could not open bin file!\r\n");
+		}
+		uint32_t file_size = f_size(&file_object);
+		enum status_code nvmError;
+		enum status_code crcres = STATUS_OK;
+		uint32_t resultCrcSd = 0;
+		uint32_t resultCrcNvm = 0;
+
+		uint8_t readBuffer[row_size]; //Buffer the size of one row
+		UINT numBytesRead;
+		uint32_t row_addr = APP_START_ADDRESS;
+		
+// 		f_lseek(&file_object, 0); // rewind read/write pointer
+
+// 		snprintf(helpStr, 63,"file size: %u, row size: %u\r\n", file_size, row_size);
+// 		SerialConsoleWriteString(helpStr);
+		
+		for (uint32_t i = 0; i < file_size/row_size; i++)
+		{
+			// erase row
+			nvmError = nvm_erase_row(row_addr);
+			if(nvmError != STATUS_OK)
+			{
+				SerialConsoleWriteString("Erase error");
+			}
+		
+			//Make sure it got erased - we read the page. Erasure in NVM is an 0xFF
+			for(int iter = 0; iter < row_size; iter++)
+			{
+				char *a = (char *)(row_addr + iter); //Pointer pointing to address APP_START_ADDRESS
+				if(*a != 0xFF)
+				{
+					SerialConsoleWriteString("Error - test page is not erased!");
+					break;
+				}
+			}
+			
+			// read row from bin file
+			numBytesRead = 0;
+			// 		FRESULT f_read (
+			// 		FIL *fp, 		/* Pointer to the file object */
+			// 		void *buff,		/* Pointer to data buffer */
+			// 		UINT btr,		/* Number of bytes to read */
+			// 		UINT *br		/* Pointer to number of bytes read */
+			// 		)
+			res = f_read(&file_object, readBuffer, row_size, &numBytesRead);
+			
+			//Write data to row. Writes are per page, so we need four writes to write a complete row
+			for (int pg = 0; pg < 4; pg++)
+			{
+				res = nvm_write_buffer (row_addr + pg*parameters.page_size, &readBuffer[pg*parameters.page_size], parameters.page_size);
+			}
+
+			if (res != FR_OK)
+			{
+				snprintf(helpStr, 63, "Test write to NVM failed at row address 0x%X!\r\n", row_addr);
+				SerialConsoleWriteString(helpStr);
+			}
+			else
+			{
+				snprintf(helpStr, 63, "Test write to NVM succeeded at row address 0x%X!\r\n", row_addr);
+				SerialConsoleWriteString(helpStr);
+			}
+			delay_cycles_ms(10); // avoid buffering issues
+			
+			*((volatile unsigned int*) 0x41007058) &= ~0x30000UL;
+			crcres |= dsu_crc32_cal	(readBuffer, row_size, &resultCrcSd);
+			*((volatile unsigned int*) 0x41007058) |= 0x20000UL;
+			crcres |= dsu_crc32_cal	(row_addr, row_size, &resultCrcNvm);
+			
+			row_addr += row_size;
+		}
+		// last row
+		nvmError = nvm_erase_row(row_addr);
+		if(nvmError != STATUS_OK)
+		{
+			SerialConsoleWriteString("Erase error");
+		}
+		for(int iter = 0; iter < row_size; iter++)
+		{
+			char *a = (char *)(row_addr + iter); //Pointer pointing to address APP_START_ADDRESS
+			if(*a != 0xFF)
+			{
+				SerialConsoleWriteString("Error - test page is not erased!");
+				break;
+			}
+		}
+		numBytesRead = 0;
+		res = f_read(&file_object, readBuffer, file_size%row_size, &numBytesRead);
+		for (int i = numBytesRead; i < row_size; i++)
+		{
+			readBuffer[i] = 1;
+		}
+		for (int pg = 0; pg < numBytesRead/parameters.page_size + 1; pg++)
+		{
+			res = nvm_write_buffer (row_addr + pg*parameters.page_size, &readBuffer[pg*parameters.page_size], parameters.page_size);
+		}
+
+		if (res != FR_OK)
+		{
+			snprintf(helpStr, 63, "Test write to NVM failed at row address 0x%X!\r\n", row_addr);
+			SerialConsoleWriteString(helpStr);
+		}
+		else
+		{
+			snprintf(helpStr, 63, "Test write to NVM succeeded at row address 0x%X!\r\n", row_addr);
+			SerialConsoleWriteString(helpStr);
+		}
+
+
+		//CRC32 Calculation example: Please read http://asf.atmel.com/docs/latest/samd21/html/group__asfdoc__sam0__drivers__crc32__group.html
+
+		//ERRATA Part 1 - To be done before RAM CRC
+		//CRC of SD Card. Errata 1.8.3 determines we should run this code every time we do CRC32 from a RAM source. See http://ww1.microchip.com/downloads/en/DeviceDoc/SAM-D21-Family-Silicon-Errata-and-DataSheet-Clarification-DS80000760D.pdf Section 1.8.3
+		*((volatile unsigned int*) 0x41007058) &= ~0x30000UL;
+
+		//CRC of SD Card
+		crcres |= dsu_crc32_cal	(readBuffer, numBytesRead, &resultCrcSd); //Instructor note: Was it the third parameter used for? Please check how you can use the third parameter to do the CRC of a long data stream in chunks - you will need it!
+	
+		//Errata Part 2 - To be done after RAM CRC
+		*((volatile unsigned int*) 0x41007058) |= 0x20000UL;
+	 
+	 
+		//CRC of memory (NVM)
+		crcres |= dsu_crc32_cal	(row_addr, numBytesRead, &resultCrcNvm);
+	
+
+		if (crcres != STATUS_OK)
+		{
+			SerialConsoleWriteString("Could not calculate CRC!!\r\n");
+		}
+		else
+		{
+			snprintf(helpStr, 63,"CRC SD CARD: %u  CRC NVM: %u \r\n", resultCrcSd, resultCrcNvm);
+			SerialConsoleWriteString(helpStr);
+		}
+	}
 
 	/*END BOOTLOADER HERE!*/
 
@@ -234,15 +320,15 @@ int main(void)
 	SerialConsoleWriteString("ESE516 - EXIT BOOTLOADER");	//Order to add string to TX Buffer
 	delay_cycles_ms(100); //Delay to allow print
 		
-		//Deinitialize HW - deinitialize started HW here!
-		DeinitializeSerialConsole(); //Deinitializes UART
-		sd_mmc_deinit(); //Deinitialize SD CARD
+	//Deinitialize HW - deinitialize started HW here!
+	DeinitializeSerialConsole(); //Deinitializes UART
+	sd_mmc_deinit(); //Deinitialize SD CARD
 
 
-		//Jump to application
-		jumpToApplication();
+	//Jump to application
+	jumpToApplication();
 
-		//Should not reach here! The device should have jumped to the main FW.
+	//Should not reach here! The device should have jumped to the main FW.
 	
 }
 
@@ -344,7 +430,7 @@ static bool StartFilesystemAndTest(void)
 		//Write to a binaryfile
 		SerialConsoleWriteString("Write to test file (f_write)...\r\n");
 		uint32_t varWrite = 0;
-		if (0 != f_write(&file_object, binbuff,256, &varWrite))
+		if (0 != f_write(&file_object, binbuff,256, (UINT*) &varWrite))
 		{
 			f_close(&file_object);
 			LogMessage(LOG_INFO_LVL ,"[FAIL]\r\n");

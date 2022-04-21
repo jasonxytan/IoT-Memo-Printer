@@ -13158,25 +13158,7 @@ static int32_t platform_write(void *handle, uint8_t reg, uint8_t *bufp,uint16_t 
 	//YOUR JOB: Fill out the structure "imuData" to send to the device
 	//TIP: Use the array "msgOutImu" to copy the data to be sent. Remember that the position [0] of the array you send must be the register, and
 	//starting from position [1] you can copy the data to be sent. Remember to adjust the length accordingly
-
-// 	typedef struct I2C_Data
-// 	{
-// 		uint8_t address;	///<Address of the I2C device
-// 		const uint8_t *msgOut;		///<Pointer to array buffer that we will write from
-// 		uint8_t	*msgIn;		///<Pointer to array buffer that we will get message to
-// 		uint16_t lenIn;			///<Length of message to read/write;
-// 		uint16_t lenOut;			///<Length of message to read/write;
-// 		
-// 	}I2C_Data;
-	msgOutImu[0] = reg;
-	for (uint16_t i=0; i<len; i++)
-	{
-		msgOutImu[i+1] = bufp[i];
-	}
-	imuData.address = 0x6B;
-	imuData.msgOut = &msgOutImu;
-	imuData.lenOut = len+1;
-	return I2cWriteDataWait(&imuData, 100);
+return 0;
 
 }
 
@@ -13196,15 +13178,8 @@ static  int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp, uint16_t
 {
 	//YOUR JOB: Fill out the structure "imuData" to send to the device
 	//TIP: Check the structure "imuData" and notice that it has a msgOut and msgIn parameter. How do we fill this to our advantage?
-	msgOutImu[0] = reg;
-	
-	imuData.address = 0x6B;
-	imuData.msgOut = &msgOutImu;
-	imuData.lenOut = 1;
-	imuData.msgIn = bufp;
-	imuData.lenIn = len;
+return 0;
 
-	return I2cReadDataWait(&imuData, 0, 100);
 
 }
 

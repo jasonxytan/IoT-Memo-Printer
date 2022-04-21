@@ -113,29 +113,30 @@ void SysTick_Handler_MQTT(void){
 }
 
 char TimerIsExpired(Timer* timer) {
-	long left = timer->end_time - xTaskGetTickCount();
-	return (left < 0);
+	return xTaskCheckForTimeOut(&timer->xTimeOut, &timer->xTicksToWait) == pdTRUE;
 }
 
 
-void TimerCountdownMS(Timer* timer, unsigned int timeout) {
-	timer->end_time = xTaskGetTickCount() + timeout;
+void TimerCountdownMS(Timer* timer, unsigned int timeout_ms) {
+	timer->xTicksToWait = timeout_ms / portTICK_PERIOD_MS; /* convert milliseconds to ticks */
+	vTaskSetTimeOutState(&timer->xTimeOut); /* Record the time at which this function was entered. */
 }
 
 
 void TimerCountdown(Timer* timer, unsigned int timeout) {
-	timer->end_time = xTaskGetTickCount(); + (timeout * 1000);
+	TimerCountdownMS(timer, timeout * 1000);
 }
 
 
 int TimerLeftMS(Timer* timer) {
-	long left = timer->end_time - xTaskGetTickCount();
-	return (left < 0) ? 0 : left;
+	xTaskCheckForTimeOut(&timer->xTimeOut, &timer->xTicksToWait); /* updates xTicksToWait to the number left */
+	return (timer->xTicksToWait < 0) ? 0 : (timer->xTicksToWait * portTICK_PERIOD_MS);
 }
 
 
 void TimerInit(Timer* timer) {
-	timer->end_time = 0;
+	timer->xTicksToWait = 0;
+	memset(&timer->xTimeOut, '\0', sizeof(timer->xTimeOut));
 }
 
 static int WINC1500_read(Network* n, unsigned char* buffer, int len, int timeout_ms) { 

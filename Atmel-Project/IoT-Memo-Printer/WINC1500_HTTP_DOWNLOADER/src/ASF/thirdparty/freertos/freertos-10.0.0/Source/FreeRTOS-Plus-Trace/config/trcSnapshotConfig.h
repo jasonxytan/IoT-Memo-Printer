@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v4.1.4
+ * Trace Recorder Library for Tracealyzer v4.3.7
  * Percepio AB, www.percepio.com
  *
  * trcSnapshotConfig.h
@@ -82,7 +82,7 @@
  * Default value is 1000, which means that 4000 bytes is allocated for the
  * event buffer.
  ******************************************************************************/
-#define TRC_CFG_EVENT_BUFFER_SIZE 400
+#define TRC_CFG_EVENT_BUFFER_SIZE 300
 
 /*******************************************************************************
  * TRC_CFG_NTASK, TRC_CFG_NISR, TRC_CFG_NQUEUE, TRC_CFG_NSEMAPHORE...
@@ -148,7 +148,7 @@
  *
  * Default value is 800.
  ******************************************************************************/
-#define TRC_CFG_SYMBOL_TABLE_SIZE 800
+#define TRC_CFG_SYMBOL_TABLE_SIZE 200
 
 #if (TRC_CFG_SYMBOL_TABLE_SIZE == 0)
 #error "TRC_CFG_SYMBOL_TABLE_SIZE may not be zero!"

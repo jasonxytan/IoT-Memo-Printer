@@ -25,12 +25,11 @@
 /* As WINC15x0 supports only 7 TCP sockets, maximum of 7 MQTT clients can be supported */
 #define MQTT_MAX_CLIENTS  TCP_SOCK_MAX
 
-typedef struct Timer Timer;
-
-struct Timer {
-	unsigned long systick_period;
-	unsigned long end_time;
-};
+typedef struct Timer
+{
+	TickType_t xTicksToWait;
+	TimeOut_t xTimeOut;
+} Timer;
 
 typedef struct Network_t Network;
 

@@ -483,7 +483,7 @@ void vTraceInitObjectHandleStack(void);
 /* Returns the "Not enough handles" error message for the specified object class */
 const char* pszTraceGetErrorNotEnoughHandles(traceObjectClass objectclass);
 
-void* prvTraceGetCurrentTaskHandle(void);
+//void* prvTraceGetCurrentTaskHandle(void);
 
 /******************************************************************************
  * TraceQueueClassTable

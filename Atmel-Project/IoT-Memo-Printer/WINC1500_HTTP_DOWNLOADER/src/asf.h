@@ -52,6 +52,10 @@
  * running the ASF driver selector tool. Any changes will be discarded.
  */
 
+// From module: ADC - Analog-to-Digital Converter (Callback APIs)
+#include <adc.h>
+#include <adc_callback.h>
+
 // From module: CRC-32 calculation
 #include <crc32.h>
 
@@ -62,12 +66,26 @@
 #include <compiler.h>
 #include <status_codes.h>
 
+// From module: DAC - Digital-to-Analog Converter (Callback APIs)
+#include <dac.h>
+#include <dac_callback.h>
+
+// From module: DMAC - Direct Memory Access Controller
+#include <dma.h>
+#include <dma_crc.h>
+
 // From module: Debug Print (FreeRTOS)
 #include <dbg_print.h>
 #include <quick_start_basic/qs_dbg_print_basic.h>
 
 // From module: Delay routines
 #include <delay.h>
+
+// From module: EVSYS - Event System Common
+#include <events.h>
+
+// From module: EVSYS - Event System with interupt hooks support
+#include <events_hooks.h>
 
 // From module: EXTINT - External Interrupt (Callback APIs)
 #include <extint.h>
@@ -81,7 +99,7 @@
 
 // From module: FreeRTOS - kernel 10.0.0
 #include <FreeRTOS.h>
-#include <StackMacros.h>
+#include <stack_macros.h>
 #include <croutine.h>
 #include <deprecated_definitions.h>
 #include <event_groups.h>
@@ -96,6 +114,18 @@
 #include <stream_buffer.h>
 #include <task.h>
 #include <timers.h>
+
+// From module: GFX Monochrome - Menu System
+#include <gfx_mono_menu.h>
+
+// From module: GFX Monochrome - Monochrome Graphic Library
+#include <gfx_mono.h>
+
+// From module: GFX Monochrome - Spinner/Spin control widget
+#include <gfx_mono_spinctrl.h>
+
+// From module: GFX Monochrome - System Font
+#include <sysfont.h>
 
 // From module: Generic board support
 #include <board.h>
@@ -145,6 +175,9 @@
 // From module: SERCOM USART - Serial Communications (Callback APIs)
 #include <usart.h>
 #include <usart_interrupt.h>
+
+// From module: SSD1306 OLED controller
+#include <ssd1306.h>
 
 // From module: SYSTEM - Clock Management for SAMD21/R21/DA/HA
 #include <clock.h>

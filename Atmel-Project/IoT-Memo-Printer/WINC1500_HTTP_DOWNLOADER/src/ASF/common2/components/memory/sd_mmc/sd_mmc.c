@@ -114,12 +114,12 @@
 #define driver_start_write_blocks       ATPASTE2(driver, _start_write_blocks)
 #define driver_wait_end_of_write_blocks ATPASTE2(driver, _wait_end_of_write_blocks)
 
-
+/*
 #if (!defined SD_MMC_0_CD_GPIO) || (!defined SD_MMC_0_CD_DETECT_VALUE)
 #  warning No pin for card detection has been defined in board.h. \
    The define SD_MMC_0_CD_GPIO, SD_MMC_0_CD_DETECT_VALUE must be added in board.h file.
 #endif
-
+*/ //Removed as code does not use SD detection pin.
 #ifdef SDIO_SUPPORT_ENABLE
 #  define IS_SDIO()  (sd_mmc_card->type & CARD_TYPE_SDIO)
 #else

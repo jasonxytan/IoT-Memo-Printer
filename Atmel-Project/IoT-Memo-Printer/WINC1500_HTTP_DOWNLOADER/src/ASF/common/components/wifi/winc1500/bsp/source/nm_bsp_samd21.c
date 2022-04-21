@@ -129,9 +129,14 @@ void nm_bsp_reset(void)
  */
 void nm_bsp_sleep(uint32 u32TimeMsec)
 {
+#ifdef __FREERTOS__
+	vTaskDelay(u32TimeMsec);
+#else
 	while (u32TimeMsec--) {
 		delay_ms(1);
 	}
+	
+#endif
 }
 
 /*

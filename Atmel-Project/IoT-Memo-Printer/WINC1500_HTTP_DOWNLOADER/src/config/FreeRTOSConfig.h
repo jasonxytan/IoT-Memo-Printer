@@ -51,9 +51,9 @@ void assert_triggered(const char *file, uint32_t line);
 #define configCPU_CLOCK_HZ (system_gclk_gen_get_hz(GCLK_GENERATOR_0))
 #define configTICK_RATE_HZ ((portTickType)1000)
 #define configMAX_PRIORITIES (5)
-#define configMINIMAL_STACK_SIZE ((unsigned short)100)
+#define configMINIMAL_STACK_SIZE ((unsigned short)150)
 /* configTOTAL_HEAP_SIZE is not used when heap_3.c is used. */
-#define configTOTAL_HEAP_SIZE ((size_t)(12000))
+#define configTOTAL_HEAP_SIZE ((size_t)(13000))
 #define configMAX_TASK_NAME_LEN (8)
 #define configUSE_TRACE_FACILITY 1
 #define configUSE_16_BIT_TICKS 0

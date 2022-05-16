@@ -69,11 +69,13 @@ void vUiHandlerTask(void *pvParameters)
     SerialConsoleWriteString("UI Task Started!");
     uiState = UI_STATE_IGNORE_PRESSES;  // Initial state
 
-    // Graphics Test - Remove if not using
+    // Graphics Test - Students to uncomment to test out the OLED driver if you are using it! 
+	/*
     gfx_mono_init();
-    gfx_mono_draw_line(1, 1, 62, 46, GFX_PIXEL_SET);
-    // Draw a filled circle with all quadrant drawn
-    gfx_mono_draw_filled_circle(36, 20, 20, GFX_PIXEL_SET, GFX_WHOLE);
+    gfx_mono_draw_line(0, 0, 64, 48, GFX_PIXEL_SET);
+    gfx_mono_draw_filled_circle(54, 24, 10, GFX_PIXEL_SET, GFX_WHOLE);
+	gfx_mono_draw_string("ESE516",0,0, &sysfont);
+	*/
 
     // Here we start the loop for the UI State Machine
     while (1) {
@@ -112,7 +114,7 @@ void vUiHandlerTask(void *pvParameters)
                 SeesawSetLed(0, red, green, blue);  // Turn button 1 on
                 SeesawOrderLedUpdate();
                 vTaskDelay(1000);
-                SeesawSetLed(0, 0, 0, 0);            // Turn button 1 off
+                SeesawSetLed(0, 0, 0, 0);            // Turn button 0 off
                 SeesawSetLed(15, red, green, blue);  // Turn button 15 on
                 SeesawOrderLedUpdate();
                 vTaskDelay(1000);

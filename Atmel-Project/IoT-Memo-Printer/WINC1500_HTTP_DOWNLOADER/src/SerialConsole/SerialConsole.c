@@ -176,7 +176,7 @@ void setLogLevel(enum eDebugLogLevels debugLevel)
 }
 
 /**
- * @fn			LogMessage (Students to fill out this)
+ * @fn			LogMessage
  * @brief
  * @note
  */
@@ -192,7 +192,7 @@ void LogMessage(enum eDebugLogLevels level, const char *format, ...)
 };
 
 /**
- * @fn			LogMessage Debug(Students to fill out this)
+ * @fn			LogMessage Debug
  * @brief
  * @note
  */

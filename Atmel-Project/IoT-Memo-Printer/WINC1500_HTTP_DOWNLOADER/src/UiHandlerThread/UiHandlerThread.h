@@ -19,7 +19,7 @@ extern "C" {
  * Defines
  ******************************************************************************/
 #define UI_TASK_SIZE 400  //<Size of stack to assign to the UI thread. In words
-#define UI_TASK_PRIORITY (configMAX_PRIORITIES - 3)
+#define UI_TASK_PRIORITY (configMAX_PRIORITIES - 1)
 typedef enum uiStateMachine_state {
     UI_STATE_HANDLE_BUTTONS = 0,  ///< State used to handle buttons
     UI_STATE_IGNORE_PRESSES,      ///< State to ignore button presses

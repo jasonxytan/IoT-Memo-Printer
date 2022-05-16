@@ -263,6 +263,7 @@ BaseType_t CLI_GetImuData(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const i
     static float acceleration_mg[3];
     uint8_t reg;
     stmdev_ctx_t *dev_ctx = GetImuStruct();
+	struct ImuDataPacket imuPacket;
 
     /* Read output only if new xl value is available */
     lsm6dso_xl_flag_data_ready_get(dev_ctx, &reg);
@@ -275,8 +276,16 @@ BaseType_t CLI_GetImuData(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const i
         acceleration_mg[2] = lsm6dso_from_fs2_to_mg(data_raw_acceleration[2]);
 
         snprintf((char *)pcWriteBuffer, xWriteBufferLen, "Acceleration [mg]:X %d\tY %d\tZ %d\r\n", (int)acceleration_mg[0], (int)acceleration_mg[1], (int)acceleration_mg[2]);
+		imuPacket.xmg = (int)acceleration_mg[0];
+		imuPacket.ymg = (int)acceleration_mg[1];
+		imuPacket.zmg = (int)acceleration_mg[2];
+		WifiAddImuDataToQueue(&imuPacket);
     } else {
-        snprintf((char *)pcWriteBuffer, xWriteBufferLen, "No data ready! \r\n");
+        snprintf((char *)pcWriteBuffer, xWriteBufferLen, "No data ready! Sending dummy data \r\n");
+		imuPacket.xmg = -1;
+		imuPacket.ymg = -2;
+		imuPacket.zmg = -3;
+		WifiAddImuDataToQueue(&imuPacket);
     }
     return pdFALSE;
 }
@@ -487,18 +496,18 @@ BaseType_t CLI_i2cScan(int8_t *pcWriteBuffer, size_t xWriteBufferLen, const int8
                 for (int j = 0; j < 16; j++)
                 {
 
-                    i2cOled.address = (i + j) << 1;
+                    i2cOled.address = (i + j);
 
                     	
-                    int32_t ret = I2cWriteDataWait(&i2cOled, 100);
+                    int32_t ret = I2cPingAddressWait(&i2cOled, 100, 100);
                     if (ret == 0)
                     {
-						snprintf(bufCli, CLI_MSG_LEN - 1, "%02x: ", i2cOled.address);
+						snprintf(bufCli, CLI_MSG_LEN - 1, "%02x ", i2cOled.address);
                         SerialConsoleWriteString(bufCli);
                     }
                     else
                     {
-                        snprintf(bufCli, CLI_MSG_LEN - 1, "X ");
+                        snprintf(bufCli, CLI_MSG_LEN - 1, "X  ");
 						SerialConsoleWriteString(bufCli);
                     }
                 }

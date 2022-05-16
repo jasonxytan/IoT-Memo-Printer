@@ -39,15 +39,15 @@ extern "C" {
 #define WIFI_PRIORITY (configMAX_PRIORITIES - 2)
 
 /** Wi-Fi AP Settings. */
-#define MAIN_WLAN_SSID ""             /**< Destination SSID. Change to your WIFI SSID */
+#define MAIN_WLAN_SSID "EdWifi"             /**< Destination SSID. Change to your WIFI SSID */
 #define MAIN_WLAN_AUTH M2M_WIFI_SEC_WPA_PSK /**< Security manner */
-#define MAIN_WLAN_PSK ""            /**< Password for Destination SSID. Change to your password. Please dont hack my WiFi router */
+#define MAIN_WLAN_PSK "Armitage"            /**< Password for Destination SSID. Change to your password. Please dont hack my WiFi router */
 
 /** IP address parsing. */
 #define IPV4_BYTE(val, index) ((val >> (index * 8)) & 0xFF)
 
 /** Content URI for download. */
-#define MAIN_HTTP_FILE_URL "https://www.seas.upenn.edu/~xinyangt/TestA.bin"  ///< Change me to the URL to download your OTAU binary file from!
+#define MAIN_HTTP_FILE_URL "https://www.seas.upenn.edu/~edgarc/IoT.pdf"  ///< Change me to the URL to download your OTAU binary file from!
 
 /** Maximum size for packet buffer. */
 #define MAIN_BUFFER_MAX_SIZE (512)
@@ -126,10 +126,10 @@ struct RgbColorPacket {
 #define LED_TOPIC_LED_ON "true"
 
 // Cloud MQTT User
-#define CLOUDMQTT_USER_ID ""
+#define CLOUDMQTT_USER_ID "rttyobej"
 
 // Cloud MQTT pASSWORD
-#define CLOUDMQTT_USER_PASSWORD ""
+#define CLOUDMQTT_USER_PASSWORD "BrsJBNVoQBl7"
 
 #define CLOUDMQTT_PORT 1883
 

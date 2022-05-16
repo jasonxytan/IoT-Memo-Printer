@@ -682,11 +682,13 @@ void SubscribeHandlerGameTopic(MessageData *msgData)
 
 void SubscribeHandlerImuTopic(MessageData *msgData)
 {
+	LogMessage(LOG_DEBUG_LVL, "\r\nIMU topic received!\r\n");
     LogMessage(LOG_DEBUG_LVL, "\r\n %.*s", msgData->topicName->lenstring.len, msgData->topicName->lenstring.data);
 }
 
 void SubscribeHandlerDistanceTopic(MessageData *msgData)
 {
+	LogMessage(LOG_DEBUG_LVL, "\r\nDistance topic received!\r\n");
     LogMessage(LOG_DEBUG_LVL, "\r\n %.*s", msgData->topicName->lenstring.len, msgData->topicName->lenstring.data);
 }
 
@@ -748,8 +750,7 @@ static void mqtt_callback(struct mqtt_module *module_inst, int type, union mqtt_
                 /* Subscribe chat topic. */
                 mqtt_subscribe(module_inst, GAME_TOPIC_IN, 2, SubscribeHandlerGameTopic);
                 mqtt_subscribe(module_inst, LED_TOPIC, 2, SubscribeHandlerLedTopic);
-                // mqtt_subscribe(module_inst, IMU_TOPIC, 2, SubscribeHandlerImuTopic);
-                // mqtt_subscribe(module_inst, DISTANCE_TOPIC, 2, SubscribeHandlerDistanceTopic);
+                mqtt_subscribe(module_inst, IMU_TOPIC, 2, SubscribeHandlerImuTopic);
                 /* Enable USART receiving callback. */
 
                 LogMessage(LOG_DEBUG_LVL, "MQTT Connected\r\n");
@@ -1082,7 +1083,7 @@ void vWifiTask(void *pvParameters)
             wifiStateMachine = DataToReceive;  // Update new state
         }
 
-        //Check if we need to publis something. In this example, we publish the "temperature" when the button was pressed.
+        //Check if we need to publish something. In this example, we publish the "temperature" when the button was pressed.
         if(isPressed)
         {
             mqtt_publish(&mqtt_inst, TEMPERATURE_TOPIC, mqtt_msg_temp, strlen(mqtt_msg_temp), 1, 0);

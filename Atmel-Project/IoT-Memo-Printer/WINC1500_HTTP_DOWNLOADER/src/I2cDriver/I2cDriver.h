@@ -98,6 +98,7 @@ void I2cDriverRegisterSensorBusCallbacks(void);
 void I2cSensorsError(struct i2c_master_module *const module);
 void I2cSensorsRxComplete(struct i2c_master_module *const module);
 void I2cSensorsTxComplete(struct i2c_master_module *const module);
+int32_t I2cPingAddressWait(I2C_Data *data, const TickType_t delay, const TickType_t xMaxBlockTime);
 
 #ifdef __cplusplus
 }

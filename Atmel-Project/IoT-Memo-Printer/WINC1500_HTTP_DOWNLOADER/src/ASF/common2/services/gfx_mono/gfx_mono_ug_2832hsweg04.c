@@ -67,8 +67,8 @@ void gfx_mono_ssd1306_init(void)
 	 * controller memory and the framebuffer.
 	 */
 	for (page = 0; page < GFX_MONO_LCD_PAGES; page++) {
-		for (column = 0; column < GFX_MONO_LCD_WIDTH; column++) {
-			gfx_mono_ssd1306_put_byte(page, column, 0xFF, true);
+		for (column = 0; column < 128; column++) {
+			gfx_mono_ssd1306_put_byte(page, column, 0x00, true);
 		}
 	}
 }

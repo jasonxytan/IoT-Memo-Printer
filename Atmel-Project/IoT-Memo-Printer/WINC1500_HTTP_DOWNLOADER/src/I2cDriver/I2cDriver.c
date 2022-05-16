@@ -451,7 +451,65 @@ exit:
     return error;
 
 exitError0:
+    I2cFreeMutex();
+    // xSemaphoreGive(semHandle);
+    return error;
+}
+
+
+/**
+  * @fn			int32_t I2cPingAddressWait(I2C_Data *data, const TickType_t delay, const TickType_t xMaxBlockTime)
+  * @brief       Pings an address.
+  * @details     
+  * @param[in]   data Pointer to I2C data structure which has all the information needed to send an I2C message
+  * @param[in]   delay Delay that the I2C device needs to return the response. Can be 0 if the response is ready instantly. It can be the delay an I2C device needs to make a measurement.
+  * @param[in]   xMaxBlockTime Maximum time for the thread to wait until the I2C mutex is free.
+  * @return      Returns an error message in case of error. See ErrCodes.h
+  * @note        THIS IS THE FREERTOS VERSION! DO NOT Declare #define USE_FREERTOS if you wish to use the baremetal version!
+  */
+int32_t I2cPingAddressWait(I2C_Data *data, const TickType_t delay, const TickType_t xMaxBlockTime)
+{
+    int32_t error = ERROR_NONE;
+    SemaphoreHandle_t semHandle = NULL;
+
+    //---0. Get Mutex
+    error = I2cGetMutex(WAIT_I2C_LINE_MS);
+    if (ERROR_NONE != error) goto exit;
+
+    //---1. Get Semaphore Handle
+    error = I2cGetSemaphoreHandle(&semHandle);
+    if (ERROR_NONE != error) goto exit;
+
+    //---2. Initiate sending data
+
+    error = I2cWriteData(data);
+    if (ERROR_NONE != error) {
+        goto exitError0;
+    }
+
+    //---2. Wait for binary semaphore to tell us that we are done!
+    if (xSemaphoreTake(semHandle, xMaxBlockTime) == pdTRUE) {
+        /* The transmission ended as expected. We now delay until the I2C sensor is finished */
+        if (I2cGetTaskErrorStatus()) {
+            I2cSetTaskErrorStatus(false);
+            error = ERROR_ABORTED;
+            goto exitError0;
+        }
+        vTaskDelay(delay);
+    } else {
+        /* The call to ulTaskNotifyTake() timed out. */
+        error = ERR_TIMEOUT;
+        goto exitError0;
+    }
+
+
+    //---8. Release Mutex
     error = I2cFreeMutex();
+exit:
+    return error;
+
+exitError0:
+    I2cFreeMutex();
     // xSemaphoreGive(semHandle);
     return error;
 }

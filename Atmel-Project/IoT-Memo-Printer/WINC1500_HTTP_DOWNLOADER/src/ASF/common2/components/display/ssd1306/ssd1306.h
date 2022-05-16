@@ -246,7 +246,7 @@ static inline void ssd1306_set_column_address(uint8_t address)
 {
 	// Make sure the address is 7 bits
 	address &= 0x7F;
-	ssd1306_write_command(SSD1306_CMD_COL_ADD_SET_MSB(address >> 4));
+	ssd1306_write_command(SSD1306_CMD_COL_ADD_SET_MSB(address >> 4)+ 0x02); //ESE516 change
 	ssd1306_write_command(SSD1306_CMD_COL_ADD_SET_LSB(address & 0x0F));
 }
 

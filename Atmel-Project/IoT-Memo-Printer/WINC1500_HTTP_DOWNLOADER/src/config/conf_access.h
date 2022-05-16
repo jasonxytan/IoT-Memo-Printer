@@ -43,12 +43,12 @@
 /*! \name Activation of Logical Unit Numbers
  */
 //! @{
-#define LUN_0 DISABLE    //!< On-Chip Virtual Memory.
-#define LUN_1 DISABLE    //!< AT45DBX Data Flash.
-#define LUN_2 ENABLE     //!< SD/MMC Card over Slot 0
-#define LUN_3 DISABLE    //!< Spare
-#define LUN_4 DISABLE    //!< Spare
-#define LUN_5 DISABLE    //!< Spare
+#define LUN_0 DISABLE  //!< On-Chip Virtual Memory.
+#define LUN_1 DISABLE  //!< AT45DBX Data Flash.
+#define LUN_2 ENABLE   //!< SD/MMC Card over Slot 0
+#define LUN_3 DISABLE  //!< Spare
+#define LUN_4 DISABLE  //!< Spare
+#define LUN_5 DISABLE  //!< Spare
 #define LUN_6 DISABLE    //!< Spare
 #define LUN_7 DISABLE    //!< Spare
 #define LUN_USB DISABLE  //!< Host Mass-Storage Memory.

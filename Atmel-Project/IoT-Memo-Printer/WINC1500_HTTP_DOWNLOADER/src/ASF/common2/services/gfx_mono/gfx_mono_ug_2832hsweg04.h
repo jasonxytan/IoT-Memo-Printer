@@ -62,7 +62,7 @@ extern "C" {
  * @{
  */
 
-#define GFX_MONO_LCD_WIDTH              68
+#define GFX_MONO_LCD_WIDTH              64
 #ifndef GFX_MONO_LCD_HEIGHT
 #define GFX_MONO_LCD_HEIGHT             48
 #endif

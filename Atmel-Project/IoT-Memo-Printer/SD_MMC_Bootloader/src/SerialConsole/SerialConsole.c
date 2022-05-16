@@ -81,7 +81,7 @@ void InitializeSerialConsole()
 
 	//Initialize circular buffers for RX and TX
 	cbufRx = circular_buf_init((uint8_t*)rxCharacterBuffer, RX_BUFFER_SIZE);
-	cbufTx = circular_buf_init((uint8_t*)txCharacterBuffer, RX_BUFFER_SIZE);
+	cbufTx = circular_buf_init((uint8_t*)txCharacterBuffer, TX_BUFFER_SIZE);
 
 	//Configure USART and Callbacks
 	configure_usart();

@@ -435,7 +435,7 @@ static bool StartFilesystemAndTest(void)
 		//Write to a binaryfile
 		SerialConsoleWriteString("Write to test file (f_write)...\r\n");
 		uint32_t varWrite = 0;
-		if (0 != f_write(&file_object, binbuff,256, (UINT*) &varWrite))
+		if (0 != f_write(&file_object, binbuff,256, &varWrite))
 		{
 			f_close(&file_object);
 			LogMessage(LOG_INFO_LVL ,"[FAIL]\r\n");
